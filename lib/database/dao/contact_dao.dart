@@ -33,7 +33,7 @@ class ContactDao {
 
   Map<String, dynamic> toMap(Contact contact) {
     final Map<String, dynamic> contactMap = {};
-    contactMap[_name] = contact.fullName;
+    contactMap[_name] = contact.name;
     contactMap[_accountNumber] = contact.accountNumber;
     return contactMap;
   }

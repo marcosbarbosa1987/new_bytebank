@@ -1,8 +1,10 @@
 import 'package:bytebank_with_db/database/dao/contact_dao.dart';
 import 'package:bytebank_with_db/screens/contact_form.dart';
+import 'package:bytebank_with_db/screens/transaction_form.dart';
 import 'package:flutter/material.dart';
 
 import '../Models/contact.dart';
+import '../components/progress.dart';
 
 class ContactsList extends StatefulWidget {
   const ContactsList({Key? key}) : super(key: key);
@@ -12,14 +14,13 @@ class ContactsList extends StatefulWidget {
 }
 
 class _ContactsListState extends State<ContactsList> {
-
   final ContactDao _contactDao = ContactDao();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contacts'),
+        title: const Text('Transfer'),
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
       body: FutureBuilder<List<Contact>>(
@@ -30,19 +31,7 @@ class _ContactsListState extends State<ContactsList> {
             case ConnectionState.none:
               break;
             case ConnectionState.waiting:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const <Widget>[
-                    CircularProgressIndicator(),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16.0),
-                      child: Text('Loading'),
-                    ),
-                  ],
-                ),
-              );
+              return const Progress();
             case ConnectionState.active:
               break;
             case ConnectionState.done:
@@ -50,7 +39,17 @@ class _ContactsListState extends State<ContactsList> {
               return ListView.builder(
                 itemCount: contacts.length,
                 itemBuilder: (context, index) {
-                  return _ContactItem(contacts[index]);
+                  final Contact contact = contacts[index];
+                  return _ContactItem(
+                    contact,
+                    onClick: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => TransactionForm(contact),
+                        ),
+                      );
+                    },
+                  );
                 },
               );
           }
@@ -60,15 +59,17 @@ class _ContactsListState extends State<ContactsList> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const ContactForm(),
-            )
-          ).then((value) => {
-            setState(() {
-              widget.createState();
-            })
-          });
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => const ContactForm(),
+                ),
+              )
+              .then((value) => {
+                    setState(() {
+                      widget.createState();
+                    })
+                  });
         },
       ),
     );
@@ -77,15 +78,20 @@ class _ContactsListState extends State<ContactsList> {
 
 class _ContactItem extends StatelessWidget {
   final Contact _contact;
+  final Function onClick;
 
-  const _ContactItem(this._contact);
+  const _ContactItem(
+    this._contact, {
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: () => onClick(),
         title: Text(
-          _contact.fullName,
+          _contact.name,
           style: const TextStyle(fontSize: 24.0),
         ),
         subtitle: Text(
