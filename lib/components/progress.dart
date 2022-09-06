@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Progress extends StatelessWidget {
-
   final String message;
+
   const Progress({this.message = 'Loading...'});
 
   @override
@@ -15,7 +15,10 @@ class Progress extends StatelessWidget {
           const CircularProgressIndicator(),
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
-            child: Text(message),
+            child: Text(
+              message,
+              style: const TextStyle(fontSize: 24.0),
+            ),
           ),
         ],
       ),

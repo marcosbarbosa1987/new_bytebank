@@ -1,7 +1,7 @@
+import 'package:bytebank_with_db/Models/transaction.dart';
 import 'package:bytebank_with_db/http/webclients/transactions_webclient.dart';
 import 'package:flutter/material.dart';
 
-import '../Models/contact.dart';
 import '../components/centered_message.dart';
 import '../components/progress.dart';
 
@@ -63,21 +63,4 @@ class _TransactionItem extends StatelessWidget {
       ),
     );
   }
-}
-
-class Transaction {
-  final double value;
-  final Contact contact;
-
-  Transaction(this.value, this.contact);
-
-  Transaction.fromJson(Map<String, dynamic> json) :
-      value = json['value'],
-      contact = Contact.fromJson(json['contact']);
-
-  Map<String, dynamic> toJson() =>
-      {
-        'value': value,
-        'contact': contact.toJson()
-      };
 }
